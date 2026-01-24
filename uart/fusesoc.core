@@ -1,0 +1,99 @@
+CAPI=2:
+name: 
+description: 
+
+filesets:
+  rtl:
+    files: [
+    ] 
+
+  tb:
+    files: [
+    ]
+    
+  de1SoC:
+    files: [
+      devices/de1SoC/pin.tcl
+    ]
+    
+targets:
+  default: &default
+    filesets: [rtl]
+    filters: [autotype]
+
+#############################################
+#                SIMULATION                 #
+#############################################
+    
+  sim: &sim
+    filesets_append: [tb]
+    toplevel: 
+    parameters: [
+    
+    ]
+
+  sim_icarus: & sim_icarus
+    <<: *sim
+    description: Simulate the design using IVerilog simulator
+    default_tool: icarus
+    tools:
+      icarus:
+        iverilog_options: [-g2012]
+      
+  sim_icarus_wave:
+    <<: *sim_icarus
+    description: Simulate the design using IVerilog simulator and then launch GTKWave
+    hooks:
+      post_run: [gtkwave]
+        
+  sim_ghdl: &sim_ghdl
+    <<: *sim
+    description: Simulate the design using GHDL simulator
+    default_tool: ghdl
+    tools:
+      ghdl:
+        run_options: [--vcd=wave.vcd]
+    
+  sim_ghdl_wave:
+    <<: *sim_ghdl
+    description: Simulate the design using GHDL simulator and then launch GTKWave
+    hooks:
+      post_run: [gtkwave]
+      
+#############################################
+#                SYNTHESIS                  #
+#############################################
+
+  synth: &synth
+    <<: *defualt
+    toplevel: 
+
+  synth_de1SoC:
+    <<: *synth
+    description: Synthesize the design for de1-SoC board
+    default_tool: quartus
+    filesets_append: 
+      [de1SoC]
+    tools:
+      quartus:
+        family: "Cyclone V"
+        device: "5CSEMA5F31C6"
+        board_device_index: "2"
+
+#############################################
+#                PARAMETERS                 #
+#############################################
+
+parameters:
+  template:
+    datatype    : bool / file / int / real / str
+    description : 
+    paramtype   : vlogparam / cmdlinearg / generic / plusarg / vlogdefine
+
+#############################################
+#                 SCRIPTS                   #
+#############################################
+
+scripts:
+  gtkwave:
+    cmd: [gtkwave, wave.vcd]
