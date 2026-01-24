@@ -21,12 +21,6 @@
             pkgs.ghdl
             pkgs.gtkwave
           ];
-          
-          shellHook = ''
-            mkdir tb;
-            mkdir rtl;
-            fusesoc library add .;
-          '';
         };
   };
 }

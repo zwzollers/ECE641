@@ -1,14 +1,21 @@
 CAPI=2:
-name: 
-description: 
+name: zwzollers:core:uart:1.0.0
+description: uart tx and rx controller
 
 filesets:
   rtl:
     files: [
+      rtl/uart.v,
+      rtl/rx.v,
+      rtl/tx.v,
     ] 
+    depend: [
+      zwzollers:core:clk_div:1.0.0
+    ]
 
   tb:
     files: [
+      tv/uart_tb.sv
     ]
     
   de1SoC:
@@ -27,12 +34,13 @@ targets:
     
   sim: &sim
     filesets_append: [tb]
-    toplevel: 
+    toplevel: uart_tb
     parameters: [
-    
+      p_baud_freq=115200,
+      p_clk_freq=50000000
     ]
 
-  sim_icarus: & sim_icarus
+  sim_icarus: &sim_icarus
     <<: *sim
     description: Simulate the design using IVerilog simulator
     default_tool: icarus
@@ -65,8 +73,12 @@ targets:
 #############################################
 
   synth: &synth
-    <<: *defualt
-    toplevel: 
+    <<: *default
+    toplevel: uart
+    parameters: [
+      p_baud_freq=115200,
+      p_clk_freq=50000000
+    ]
 
   synth_de1SoC:
     <<: *synth
@@ -79,16 +91,22 @@ targets:
         family: "Cyclone V"
         device: "5CSEMA5F31C6"
         board_device_index: "2"
+        pgm: "quartus"
 
 #############################################
 #                PARAMETERS                 #
 #############################################
 
 parameters:
-  template:
-    datatype    : bool / file / int / real / str
-    description : 
-    paramtype   : vlogparam / cmdlinearg / generic / plusarg / vlogdefine
+  p_baud_freq:
+    datatype    : int
+    description : UART baud rate frequency
+    paramtype   : vlogparam
+  p_clk_freq:
+    datatype    : int
+    description : system clock frequency
+    paramtype   : vlogparam
+
 
 #############################################
 #                 SCRIPTS                   #
