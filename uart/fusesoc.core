@@ -15,7 +15,15 @@ filesets:
 
   tb:
     files: [
-      tv/uart_tb.sv
+      tb/uart_tb.sv
+    ]
+    
+  synth:
+    files: [
+      rtl/uart_top.v
+    ]
+    depend: [
+      zwzollers:core:sev_seg:1.0.0
     ]
     
   de1SoC:
@@ -74,7 +82,9 @@ targets:
 
   synth: &synth
     <<: *default
-    toplevel: uart
+    toplevel: uart_top
+    filesets_append:
+      [synth]
     parameters: [
       p_baud_freq=115200,
       p_clk_freq=50000000

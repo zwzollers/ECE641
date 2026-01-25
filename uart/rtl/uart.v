@@ -5,7 +5,8 @@ module uart #(
     input           i_clk,
     input           i_rst,
 
-    output          i_tx,
+    output          o_tx,
+    output          o_tx_done,
     input           i_tx_start,
     input [7:0]     i_tx_data,
     
@@ -34,6 +35,7 @@ tx #(
     .i_clk(i_clk),
     .i_rst(i_rst),
     .o_tx(o_tx),
+    .o_done(o_tx_done),
     .i_start(i_tx_start),
     .i_data(i_tx_data)
 );
