@@ -1,13 +1,10 @@
 CAPI=2:
-name: zwzollers:core:uart:1.0.0
-description: uart tx and rx controller
+name: zwzollers:core:sdram:1.0.0
+description: sdram controller
 
 filesets:
   rtl:
     files: [
-      rtl/uart.v,
-      rtl/rx.v,
-      rtl/tx.v,
     ] 
     depend: [
       zwzollers:core:clk_div:1.0.0
@@ -20,21 +17,14 @@ filesets:
     
   synth:
     files: [
-      rtl/uart_top.v
+      rtl/sdram_top.v
     ]
     depend: [
-      zwzollers:core:sev_seg:1.0.0
     ]
     
   de1SoC:
     files: [
-      devices/de1SoC/clk.sdc: {file_type: SDC},
       devices/de1SoC/pin.tcl
-    ]
-  de10Nano:
-    files: [
-      devices/de10Nano/clk.sdc: {file_type: SDC},
-      devices/de10Nano/pin.tcl
     ]
     
 targets:
@@ -47,7 +37,6 @@ targets:
 #############################################
     
   sim: &sim
-    <<: *default
     filesets_append: [tb]
     toplevel: uart_tb
     parameters: [
@@ -107,19 +96,6 @@ targets:
       quartus:
         family: "Cyclone V"
         device: "5CSEMA5F31C6"
-        board_device_index: "2"
-        pgm: "quartus"
-
-  synth_de10Nano:
-    <<: *synth
-    description: Synthesize the design for de10-Nano board
-    default_tool: quartus
-    filesets_append: 
-      [de10Nano]
-    tools:
-      quartus:
-        family: "Cyclone V"
-        device: "5CSEBA6U23I7"
         board_device_index: "2"
         pgm: "quartus"
 

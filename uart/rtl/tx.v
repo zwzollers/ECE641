@@ -79,6 +79,7 @@ always @(posedge w_baud_clk or negedge i_rst) begin
             end
 
             s_STOP: begin
+                r_tx <= 1'b1;
                 r_state <= s_IDLE; 
             end
         endcase

@@ -11,6 +11,8 @@ module uart_top #(
     input           i_rx,
     output          o_rx_new,
     output          o_rx_err,
+    
+    output [7:0]    o_rx_data,
     output [6:0]    o_rx_sevseg_1,
     output [6:0]    o_rx_sevseg_2
 );
@@ -19,6 +21,7 @@ wire [7:0] w_data;
 wire       w_new;
 
 assign o_rx_new = w_new;
+assign o_rx_data = w_data;
 
 uart #(
     .p_clk_freq(p_clk_freq),

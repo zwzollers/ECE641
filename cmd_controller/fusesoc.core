@@ -1,40 +1,24 @@
 CAPI=2:
-name: zwzollers:core:uart:1.0.0
+name: zwzollers:core:cmd_ctrl:1.0.0
 description: uart tx and rx controller
 
 filesets:
   rtl:
     files: [
-      rtl/uart.v,
-      rtl/rx.v,
-      rtl/tx.v,
+      rtl/cmd_controller.sv
     ] 
     depend: [
-      zwzollers:core:clk_div:1.0.0
+      zwzollers:core:uart:1.0.0
     ]
 
   tb:
     files: [
-      tb/uart_tb.sv
-    ]
-    
-  synth:
-    files: [
-      rtl/uart_top.v
-    ]
-    depend: [
-      zwzollers:core:sev_seg:1.0.0
+      tb/cmd_controller_tb.sv
     ]
     
   de1SoC:
     files: [
-      devices/de1SoC/clk.sdc: {file_type: SDC},
       devices/de1SoC/pin.tcl
-    ]
-  de10Nano:
-    files: [
-      devices/de10Nano/clk.sdc: {file_type: SDC},
-      devices/de10Nano/pin.tcl
     ]
     
 targets:
@@ -49,7 +33,7 @@ targets:
   sim: &sim
     <<: *default
     filesets_append: [tb]
-    toplevel: uart_tb
+    toplevel: cmd_controller_tb
     parameters: [
       p_baud_freq=115200,
       p_clk_freq=50000000
@@ -89,12 +73,12 @@ targets:
 
   synth: &synth
     <<: *default
-    toplevel: uart_top
-    filesets_append:
-      [synth]
+    toplevel: cmd_controller
     parameters: [
       p_baud_freq=115200,
-      p_clk_freq=50000000
+      p_clk_freq=50000000,
+      p_reg_count=16,
+      p_reg_size=32
     ]
 
   synth_de1SoC:
@@ -110,19 +94,6 @@ targets:
         board_device_index: "2"
         pgm: "quartus"
 
-  synth_de10Nano:
-    <<: *synth
-    description: Synthesize the design for de10-Nano board
-    default_tool: quartus
-    filesets_append: 
-      [de10Nano]
-    tools:
-      quartus:
-        family: "Cyclone V"
-        device: "5CSEBA6U23I7"
-        board_device_index: "2"
-        pgm: "quartus"
-
 #############################################
 #                PARAMETERS                 #
 #############################################
@@ -135,6 +106,14 @@ parameters:
   p_clk_freq:
     datatype    : int
     description : system clock frequency
+    paramtype   : vlogparam
+  p_reg_count:
+    datatype    : int
+    description : number of register
+    paramtype   : vlogparam
+  p_reg_size:
+    datatype    : int
+    description : size of registers
     paramtype   : vlogparam
 
 

@@ -18,8 +18,6 @@
             pkgs.ghdl
             pkgs.gtkwave
             pkgs.fusesoc
-            pkgs.ghdl
-            pkgs.gtkwave
           ];
         };
   };
