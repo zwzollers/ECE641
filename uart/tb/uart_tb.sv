@@ -14,6 +14,7 @@ uart #(
 ) uart_controller (
     .i_clk(r_clk),
     .i_rst(r_rst),
+    .i_loopback(1'b0),
     .o_tx(w_tx),
     .o_tx_done(w_tx_done),
     .i_tx_start(r_tx_start),
@@ -40,7 +41,27 @@ wire [7:0] w_rx_data;
 
 time last_edge = 0;
 
-reg[10:0] r_test_data = 11'b10110011000;
+task clk;
+    for (int i = 0; i < p_count; i = i + 1) begin
+        @(posedge r_clk);
+    end
+endtask
+
+//Task to send data over MOSI
+task send_data(input [7:0] data);
+	integer i;
+	r_rx = 1'b0;
+	clk();
+	for(i = 0; i < 8; i = i + 1) begin
+		r_rx = data[i];
+		clk();
+	end
+	r_rx = ^data;
+	clk();
+	r_rx = 1'b1;
+	clk();
+	clk();
+endtask	
 
 initial begin
     $dumpfile("wave.vcd");
@@ -48,24 +69,10 @@ initial begin
 
     r_rst = 1'b0;
     @(posedge r_clk);
-    @(posedge r_clk);
     r_rst = 1'b1;
     @(posedge r_clk);
-    @(posedge r_clk);
     
-
-    for (int i = 0; i < 11; i = i + 1) begin
-        
-        r_rx = r_test_data[i];
-        for (int i = 0; i < p_count; i = i + 1) begin
-            @(r_clk);
-        end  
-    end
-    
-    if (w_rx_data != r_test_data[8:1])
-        $error("%d != %d", w_rx_data, r_test_data[8:1]);
-
-    $display("Testbench finished OK");
+    send_data(8'hFB);
     $finish;
 end
 

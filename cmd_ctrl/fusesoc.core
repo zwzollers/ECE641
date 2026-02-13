@@ -5,20 +5,34 @@ description: uart tx and rx controller
 filesets:
   rtl:
     files: [
-      rtl/cmd_controller.sv
+      rtl/cmd_ctrl.v
     ] 
-    depend: [
-      zwzollers:core:uart:1.0.0
-    ]
 
   tb:
     files: [
-      tb/cmd_controller_tb.sv
+      tb/cmd_ctrl_tb.sv
+    ]
+    depend: [
+      zwzollers:core:uart:1.0.0
+    ]
+    
+  synth:
+    files: [
+      rtl/cmd_ctrl_top.v
+    ]
+    depend: [
+      zwzollers:core:uart:1.0.0
     ]
     
   de1SoC:
     files: [
+      devices/de1SoC/clk.sdc: {file_type: SDC},
       devices/de1SoC/pin.tcl
+    ]
+  de10Nano:
+    files: [
+      devices/de10Nano/clk.sdc: {file_type: SDC},
+      devices/de10Nano/pin.tcl
     ]
     
 targets:
@@ -33,7 +47,7 @@ targets:
   sim: &sim
     <<: *default
     filesets_append: [tb]
-    toplevel: cmd_controller_tb
+    toplevel: cmd_ctrl_tb
     parameters: [
       p_baud_freq=115200,
       p_clk_freq=50000000
@@ -73,12 +87,11 @@ targets:
 
   synth: &synth
     <<: *default
-    toplevel: cmd_controller
+    toplevel: cmd_ctrl_top
+    filesets_append: [synth]
     parameters: [
       p_baud_freq=115200,
       p_clk_freq=50000000,
-      p_reg_count=16,
-      p_reg_size=32
     ]
 
   synth_de1SoC:
@@ -91,6 +104,20 @@ targets:
       quartus:
         family: "Cyclone V"
         device: "5CSEMA5F31C6"
+        board_device_index: "2"
+        pgm: "quartus"
+        
+
+  synth_de10Nano:
+    <<: *synth
+    description: Synthesize the design for de10-Nano board
+    default_tool: quartus
+    filesets_append: 
+      [de10Nano]
+    tools:
+      quartus:
+        family: "Cyclone V"
+        device: "5CSEBA6U23I7"
         board_device_index: "2"
         pgm: "quartus"
 
@@ -106,14 +133,6 @@ parameters:
   p_clk_freq:
     datatype    : int
     description : system clock frequency
-    paramtype   : vlogparam
-  p_reg_count:
-    datatype    : int
-    description : number of register
-    paramtype   : vlogparam
-  p_reg_size:
-    datatype    : int
-    description : size of registers
     paramtype   : vlogparam
 
 

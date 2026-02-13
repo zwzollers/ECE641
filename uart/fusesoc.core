@@ -122,6 +122,18 @@ targets:
         device: "5CSEBA6U23I7"
         board_device_index: "2"
         pgm: "quartus"
+        
+  synth_de23Lite:
+    <<: *synth
+    description: Synthesize the design for de23-Lite board
+    default_tool: quartus
+    filesets_append: 
+      [de10Nano]
+    tools:
+      quartus:
+        family: "Agilex 3"
+        device: "A3CZ135BB18AE7S"
+        pgm: "quartus"
 
 #############################################
 #                PARAMETERS                 #
