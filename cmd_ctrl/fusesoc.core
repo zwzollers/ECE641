@@ -10,7 +10,8 @@ filesets:
 
   tb:
     files: [
-      tb/cmd_ctrl_tb.sv
+      tb/cmd_ctrl_tb.sv,
+      rtl/cmds.vh: {copyto: "./", file_type: "User"}
     ]
     depend: [
       zwzollers:core:uart:1.0.0
@@ -18,7 +19,8 @@ filesets:
     
   synth:
     files: [
-      rtl/cmd_ctrl_top.v
+      rtl/cmd_ctrl_top.v,
+      rtl/cmds.vh: {copyto: "./"}
     ]
     depend: [
       zwzollers:core:uart:1.0.0

@@ -20,21 +20,11 @@ module cmd_controller (
     output          o_loopback
 );
 
-localparam [11:0] 
-    p_cmd_ping  = {1'b1, 5'd1, 5'd1},
-    p_cmd_read  = {1'b1, 5'd0, 5'd1},
-    p_cmd_write = {1'b1, 5'd1, 5'd0},
-    p_cmd_none  = {1'b0, 5'd0, 5'd0};
-
+`include "cmds.vh"
+	
 wire [4:0] w_cmd_data_bytes;
 wire [4:0] w_resp_data_bytes;
 wire       w_cmd_cli;
-
-assign {w_cmd_cli, w_cmd_data_bytes, w_resp_data_bytes} = 
-    r_cmd == 8'h70 ? p_cmd_ping  :
-    r_cmd == 8'h72 ? p_cmd_read  :
-    r_cmd == 8'h77 ? p_cmd_write :
-                     p_cmd_none  ;
                      
 wire [3:0] w_rx_data_hex = 
     (i_rx_data == 8'h30) ? 4'h0 :

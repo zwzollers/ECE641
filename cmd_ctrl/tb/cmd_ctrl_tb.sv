@@ -112,7 +112,6 @@ initial begin
     
     #(p_clk_half_period * 100000);
 
-    
     $finish;
 end
 
